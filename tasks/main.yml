@@ -1,2 +1,18 @@
 ---
-# tasks file for diamond
+- name: Install Diamond for data collection.
+  hosts: cato
+  tasks:
+    - name: Check previous installation.
+      stat:
+        path: /opt/diamond
+      tags:
+        - check
+      register: diamond_stat
+    - name: Install the Diamond package.
+      become: yes
+      pip:
+        name: diamond
+        state: present
+        virtualenv: /opt/diamond
+      when: diamond_stat.stat.exists == false
+...
